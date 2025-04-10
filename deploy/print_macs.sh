@@ -12,7 +12,7 @@ echo "The following are the mac addresses for your nodes. Please use these mac a
 while IFS= read -r nodeIP
 do
   	#ssh into each node and get its MAC.
-  	mac=$(ssh -n $sshOptions $nodeIP cat /sys/class/net/br0/address)
+  	mac=$(ssh -n $sshOptions ubuntu@$nodeIP sudo cat /sys/class/net/br0/address)
 
 	echo "${nodeIP}   ${mac}"
 done < ./nodes.conf
