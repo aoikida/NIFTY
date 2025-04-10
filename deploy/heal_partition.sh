@@ -4,7 +4,7 @@
 . ../configuration
 
 # If your ssh need more options, you can set them in the $sshOptions variable (you can set identify file, port, ...)
-sshOptions=" -T "
+sshOptions=" -i /home/ubuntu/NIFTY/rabia.pem "
 
 # For each of the nodes in deployment, run partitiner.
 while IFS= read -r nodeIP
@@ -14,6 +14,6 @@ do
 	fi
 	echo "Healing the partition on node $nodeIP"
 	# Could need to either run the script as sudo or add sudo here to be able to deploy rules. (or have OVS not require sudo)
-	ssh -n $sshOptions $nodeIP "$NIFTY_HOME/partitioner"
+	ssh -n $sshOptions ubuntu@$nodeIP "sudo $NIFTY_HOME/partitioner"
  
 done < ./nodes.conf

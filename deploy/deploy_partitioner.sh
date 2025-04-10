@@ -4,7 +4,7 @@
 . ../configuration
 
 # If your ssh need more options, you can set them in the $sshOptions variable (you can set identify file, port, ...)
-sshOptions=" -T "
+sshOptions=" -i /home/ubuntu/NIFTY/rabia.pem "
 
 macs="";
 
@@ -15,7 +15,7 @@ do
 	re='^[0-9]+$'
 	if ! [[ $nodeIP =~ $re ]]; then	
   		#ssh into each node and get its MAC.
- 	 	mac=$(ssh -n $sshOptions $nodeIP cat /sys/class/net/br0/address)
+ 	 	mac=$(ssh -n $sshOptions ubuntu@$nodeIP cat /sys/class/net/br0/address)
 		echo $mac >> nifty_parts.conf
 		echo "${nodeIP}   ${mac}"
 
@@ -34,12 +34,12 @@ do
 	fi
 
   	#ssh into the node and get its MAC.
-  	mac=$(ssh -n $sshOptions $nodeIP cat /sys/class/net/br0/address)
-  	scp $sshOptions ./nifty_parts.conf $nodeIP:"${NIFTY_HOME}/parts.conf"
+  	mac=$(ssh -n $sshOptions ubuntu@$nodeIP cat /sys/class/net/br0/address)
+  	scp $sshOptions ./nifty_parts.conf ubuntu@$nodeIP:"${NIFTY_HOME}/parts.conf"
 
 	echo "Starting Partitioner on node $nodeIP (which has MAC address: $mac)"
 	# Could need to either run the script as sudo or add sudo here to be able to deploy rules. (or have OVS not require sudo)
-	ssh -n $sshOptions $nodeIP "cd $NIFTY_HOME && ./partitioner $mac"
+	ssh -n $sshOptions ubuntu@$nodeIP "cd $NIFTY_HOME && sudo ./partitioner $mac"
  
 done < ./nodes.conf
 
